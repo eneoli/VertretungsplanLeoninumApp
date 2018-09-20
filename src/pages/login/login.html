@@ -1,0 +1,37 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>
+            <img class="headerLogo"
+                 src="assets/imgs/logo.png" width="8%" height="auto"> Vertretungsplan - Login
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+
+    <img class="logo" width="25%" height="auto"
+         src="assets/imgs/logo.png">
+    <br>
+    <br>
+    <ion-list>
+        <ion-item>
+            <ion-label>
+                <ion-icon name="person"></ion-icon>
+                Nutzername:
+            </ion-label>
+            <ion-input [(ngModel)]="username" type="text" autocapitalize="none"></ion-input>
+        </ion-item>
+        <ion-item>
+            <ion-label>
+                <ion-icon name="lock"></ion-icon>
+                Passwort:
+            </ion-label>
+            <ion-input [(ngModel)]="password" type="password"></ion-input>
+        </ion-item>
+        <ion-item><p class="text">Die Logindaten sind die gleichen wie für den Computerraum und moodle!</p></ion-item>
+    </ion-list>
+
+    <p class="errorText" id="errorText"></p>
+
+    <button (click)="onLogin()" ion-button>Login</button>
+</ion-content>

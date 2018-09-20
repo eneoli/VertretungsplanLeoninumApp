@@ -1,0 +1,92 @@
+<ion-header>
+    <ion-navbar hideBackButton="true">
+        <ion-title>
+            <img class="headerImage"
+                 src="assets/imgs/logo.png" width="8%" height="auto"> {{lessons.date ?
+            lessons.date.toLocaleString("de-de",{
+            weekday:
+            "long"}) : "Kein Datum angegeben"}} {{lessons.date ? "," : ""}} {{lessons.date ?
+            lessons.date.toLocaleString("de-de",{ day: "numeric", month: "numeric"}) : ""}}
+        </ion-title>
+        <ion-buttons right>
+            <button ion-button icon-only (click)="switchPlan()">
+                <ion-icon name="swap"></ion-icon>
+            </button>
+            <button ion-button icon-only (click)="openSettings()">
+                <ion-icon name="md-settings"></ion-icon>
+            </button>
+        </ion-buttons>
+    </ion-navbar>
+</ion-header>
+<ion-content padding>
+
+    <ion-refresher (ionRefresh)="onRefresh($event)">
+        <ion-refresher-content
+                refreshingText="Lade Vertretungsplan..."
+        >
+        </ion-refresher-content>
+    </ion-refresher>
+
+    <div *ngIf="lessons.lessons && lessons.lessons.length > 0; else noPlan">
+
+        <p><b>Verplante Lehrer: </b> <br>{{lessons.usedTeachers}}</p>
+        <p><b>Fehlende Lehrer: </b> <br>{{lessons.missingTeachers}}</p>
+
+        <ion-grid class="border">
+            <ion-row class="table-header">
+                <ion-col class="table-col">
+                    <p>Stunde</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>Klasse</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>Fach</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>Lehrer</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>Vertretung</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>Bemerkung</p>
+                </ion-col>
+            </ion-row>
+            <ion-row class="table-row" *ngFor="let lesson of lessons.lessons"
+                     [ngStyle]="{'background-color': getColor(lesson.class)}">
+                <ion-col class="table-col">
+                    <p>{{lesson.hour ? lesson.hour: "-"}}</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>{{lesson.class ? lesson.class: "-"}}</p>
+                </ion-col>
+                <ion-col>
+                    <p>{{lesson.subject ? lesson.subject: "-"}}</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>{{lesson.teacher ? lesson.teacher: "-" }}</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>{{lesson.replacement ? lesson.replacement: "-"}}</p>
+                </ion-col>
+                <ion-col class="table-col">
+                    <p>{{lesson.comment ? lesson.comment: "-" }}</p>
+                </ion-col>
+            </ion-row>
+        </ion-grid>
+
+        <p>Zuletzt aktualisiert: {{lessons.state.toLocaleString("de-de",{ weekday: "long"}) }} um
+            {{lessons.state.toLocaleString("de-de",{ hour: "numeric", minute:"numeric"}) }}<b></b></p>
+
+        <p><b>Alle Angaben ohne Gewähr</b></p>
+    </div>
+
+    <ng-template #noPlan>
+        <div class="noPlanIconContainer">
+            <ion-icon class="noPlanIcon" name="close-circle"></ion-icon>
+        </div>
+        <br>
+        <p class="noPlanText">Keinen Plan gefunden!</p>
+    </ng-template>
+</ion-content>

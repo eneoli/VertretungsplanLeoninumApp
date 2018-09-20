@@ -1,0 +1,71 @@
+<ion-header>
+    <ion-navbar>
+        <ion-title>Einstellungen</ion-title>
+    </ion-navbar>
+</ion-header>
+
+<ion-content padding>
+    <p>
+        Hier kannst du deine Klasse einstellen, damit eventuelle Vertretungsstunden markiert werden und
+        du eine Benachrichtigung bekommst.
+    </p>
+
+    <br>
+
+    <ion-grid>
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Jahrgang</ion-label>
+                    <ion-select [(ngModel)]="year" interface="popover">
+                        <ion-option value="-1">Nicht angeben</ion-option>
+                        <ion-option value="5">5</ion-option>
+                        <ion-option value="6">6</ion-option>
+                        <ion-option value="7">7</ion-option>
+                        <ion-option value="8">8</ion-option>
+                        <ion-option value="9">9</ion-option>
+                        <ion-option value="10">10</ion-option>
+                        <ion-option value="11">11</ion-option>
+                        <ion-option value="12">12</ion-option>
+                        <ion-option value="13">13</ion-option>
+                    </ion-select>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+
+        <ion-row>
+            <ion-col [style.visibility]="year>=11 || year == -1 ? 'hidden' : 'visible'">
+                <ion-item>
+                    <ion-label>Klasse</ion-label>
+                    <ion-select [(ngModel)]="classCharacter" interface="popover">
+                        <ion-option value="a">a</ion-option>
+                        <ion-option value="b">b</ion-option>
+                        <ion-option value="c">c</ion-option>
+                        <ion-option value="d">d</ion-option>
+                        <ion-option value="e">e</ion-option>
+                        <ion-option value="f">f</ion-option>
+                        <ion-option value="g">g</ion-option>
+                    </ion-select>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+
+        <ion-row>
+            <ion-col>
+                <ion-item>
+                    <ion-label>Push-Benachrichtigungen</ion-label>
+                    <ion-checkbox [(ngModel)]="showPush"></ion-checkbox>
+                </ion-item>
+            </ion-col>
+        </ion-row>
+        <br>
+        <ion-row>
+            <ion-col>
+                <div class="inline">
+                    <button ion-button color="danger" clear (click)="onDismiss()">Abbrechen</button>
+                    <button ion-button color="secondary" clear (click)="onSave()">Speichern</button>
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

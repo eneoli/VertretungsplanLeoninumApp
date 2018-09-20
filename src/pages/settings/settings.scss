@@ -1,0 +1,16 @@
+page-settings {
+  .modal {
+    padding: 30px;
+    background: rgba(0,0,0,0.5);
+  }
+}
+
+page-settings.modal {
+  padding: 30px;
+  background: rgba(0,0,0,0.5);
+}
+
+.inline {
+  display: inline;
+  overflow: hidden;
+}
