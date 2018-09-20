@@ -1,4 +1,4 @@
-# Vertretungsplam am Leo
+# Vertretungsplan am Leo
 > Der Vertretungsplan des Leoninums direkt auf dem Smartphone
 
 
