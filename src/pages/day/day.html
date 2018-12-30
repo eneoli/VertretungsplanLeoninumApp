@@ -2,12 +2,17 @@
     <ion-navbar hideBackButton="true">
         <ion-title>
             <img class="headerImage"
-                 src="assets/imgs/logo.png" width="8%" height="auto"> {{lessons.date ?
+                 src="assets/imgs/logo.png" width="11%" height="auto">{{lessons.date ?
             lessons.date.toLocaleString("de-de",{
             weekday:
             "long"}) : "Kein Datum angegeben"}} {{lessons.date ? "," : ""}} {{lessons.date ?
             lessons.date.toLocaleString("de-de",{ day: "numeric", month: "numeric"}) : ""}}
         </ion-title>
+        <ion-buttons left>
+            <button ion-button icon-only (click)="logout()">
+                <ion-icon name="exit"></ion-icon>
+            </button>
+        </ion-buttons>
         <ion-buttons right>
             <button ion-button icon-only (click)="switchPlan()">
                 <ion-icon name="swap"></ion-icon>
