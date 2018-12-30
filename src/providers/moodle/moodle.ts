@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 @Injectable()
 export class MoodleProvider {
 
-    public static middlewareUrl: string = "http://192.168.188.62:3000";
+    public static middlewareUrl: string = "http://vertretung.leoninum.org";
     public middlewareUrl: string = MoodleProvider.middlewareUrl;
 
     constructor(public http: HttpClient) {
