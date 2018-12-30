@@ -28,10 +28,16 @@
             </ion-label>
             <ion-input [(ngModel)]="password" type="password"></ion-input>
         </ion-item>
-        <ion-item><p class="text">Die Logindaten sind die gleichen wie für den Computerraum und moodle!</p></ion-item>
+        <ion-item>
+            <p></p>
+            <ion-label>Login speichern</ion-label>
+            <ion-checkbox [(ngModel)]="remember"></ion-checkbox>
+        </ion-item>
     </ion-list>
 
-    <p class="errorText" id="errorText"></p>
+    <button (click)="onLogin()" ion-button full large round>Login</button>
 
-    <button (click)="onLogin()" ion-button>Login</button>
+    <p class="text">Die Logindaten sind die gleichen wie für den Computerraum und moodle!</p>
+
+    <p class="errorText" id="errorText"></p>
 </ion-content>
