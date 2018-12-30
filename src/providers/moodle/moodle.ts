@@ -43,7 +43,7 @@ export class MoodleProvider {
     public secureLogin(encryptedCredentials: string) {
         let observable = new Observable((observer) => {
             try {
-                this.http.post(MoodleProvider.middlewareUrl + "/secureMoodleSession", {secret: encryptedCredentials}).subscribe((res: any) => {
+                this.http.get(MoodleProvider.middlewareUrl + "/secureMoodleSession?secret=" + encodeURIComponent(encryptedCredentials), {}).subscribe((res: any) => {
                     try {
                         if (res.hasOwnProperty("error")) {
                             throw new Error(res.error);
