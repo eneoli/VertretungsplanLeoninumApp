@@ -6,6 +6,7 @@ import {LocalNotifications} from "@ionic-native/local-notifications";
 import {Storage} from "@ionic/storage";
 import {HttpClient} from "@angular/common/http";
 import {MoodleProvider} from "../../providers/moodle/moodle";
+import {LoginPage} from "../login/login";
 
 @Component({
     selector: 'page-day',
@@ -22,7 +23,7 @@ export class DayPage implements OnInit
     private dayName: string = "today";
     private lessonsForUser = [];
 
-    constructor(private moodleProvider: MoodleProvider, private modalCtrl: ModalController, private nav: NavController, private storage: Storage, private localNotifications: LocalNotifications, public loadingCtrl: LoadingController, public http: HttpClient, public navParams: NavParams)
+    constructor(private moodleProvider: MoodleProvider, private modalCtrl: ModalController, private nav: NavController, private storage: Storage, private localNotifications: LocalNotifications, public loadingCtrl: LoadingController, public http: HttpClient, public navParams: NavParams, public navCtrl: NavController)
     {
         this.day = "today";
         this.moodleSession = this.navParams.get("moodleSession");
@@ -121,6 +122,11 @@ export class DayPage implements OnInit
         {
             refresher.complete()
         }, 3000);
+    }
+
+    logout() {
+        this.storage.remove("encryptedCredentials");
+        this.navCtrl.setRoot(LoginPage, {}, {direction: "down", animate: true, animation:"md-transition"});
     }
 
     switchPlan()
