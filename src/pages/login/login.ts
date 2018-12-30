@@ -4,86 +4,118 @@ import {HTTP} from "@ionic-native/http";
 import {DayPage} from "../day/day";
 import {Storage} from "@ionic/storage";
 import {MoodleProvider} from "../../providers/moodle/moodle";
+import * as JSEncrypt from "jsencrypt";
 
 @IonicPage()
 @Component({
     selector: 'page-login',
     templateUrl: 'login.html',
 })
-export class LoginPage
-{
+export class LoginPage {
     username: string;
     password: string;
+    remember: boolean;
 
-    constructor(private moodleProvider: MoodleProvider, public loadingCtrl: LoadingController, public navCtrl: NavController, public http: HTTP, public storage: Storage)
-    {
-        try
-        {
-            this.storage.get("messageTime").then(value =>
-            {
-                try
-                {
-                    if (value.day > new Date())
-                    {
+    constructor(private moodleProvider: MoodleProvider, public loadingCtrl: LoadingController, public navCtrl: NavController, public http: HTTP, public storage: Storage) {
+        try {
+            this.storage.get("messageTime").then(value => {
+                try {
+                    if (value.day > new Date()) {
                         this.storage.set("messageTime", {day: new Date(), alreadyMessaged: false})
                     }
-                } catch (e)
-                {
+                } catch (e) {
                     this.storage.set("messageTime", {day: new Date(), alreadyMessaged: false})
                 }
             });
 
-            this.storage.get("messageTime").catch(() =>
-            {
+            this.storage.get("messageTime").catch(() => {
                 this.storage.set("messageTime", {day: new Date(), alreadyMessaged: false})
             })
 
 
-        } catch (e)
-        {
+        } catch (e) {
             this.storage.set("messageTime", {day: new Date(), alreadyMessaged: false})
         }
 
-        try
-        {
-            storage.get("LeoMoodleSesssion").then(value =>
-            {
-                this.http.get("http://vertretung.leoninum.org/validateSession?moodleSession=" + value, {}, {}).then(res =>
-                {
-                    let result = JSON.parse(res.data);
-                    if (result.valid)
-                    {
-                        this.navCtrl.setRoot(DayPage, {moodleSession: value}, {direction: "up"});
-                    }
-                });
+        let spinner = null;
+        try {
+            this.storage.get("encryptedCredentials").then(async value => {
+                if (value) {
+                    spinner = this.loadingCtrl.create({
+                        content: "Melde an..."
+                    });
+
+                    spinner.present();
+
+                    // Timeout
+                    setTimeout(() => {
+                        spinner.dismissAll();
+                        document.getElementById("errorText").textContent = "Automatischer Login fehlgeschlagen!";
+                        storage.remove("encryptedCredentials");
+                    }, 60000); // 1min timeout
+
+                    // secure auto login
+                    this.moodleProvider.secureLogin(value).subscribe((value: string) => {
+                        spinner.dismissAll();
+                        this.navCtrl.setRoot(DayPage, {moodleSession: value}, {
+                            direction: "up",
+                            animate: true,
+                            animation: "md-transition"
+                        }); // error handling
+                    }, () => {
+                        spinner.dismissAll();
+                        document.getElementById("errorText").textContent = "Automatischer Login fehlgeschlagen!";
+                    });
+                }
             });
-        } catch (e)
-        {
+        } catch (e) {
+            spinner.dismissAll();
+            document.getElementById("errorText").textContent = "Automatischer Login fehlgeschlagen!";
+            this.storage.remove("encryptedCredentials");
         }
     }
 
-    onLogin(): void
-    {
+    async onLogin(): Promise<void> {
+
         let spinner = this.loadingCtrl.create({
             content: "Bitte warten..."
         });
 
         spinner.present();
+        let encrypted = null;
 
-        setTimeout(() =>
-        {
-            this.moodleProvider.login(this.username, this.password).subscribe((moodleSession) =>
-            {
+        try {
+            let crypto = new JSEncrypt.JSEncrypt();
+            let publicKey = await this.http.get(this.moodleProvider.middlewareUrl + "/publickey", {}, {});
+            crypto.setPublicKey(publicKey.data);
+            encrypted = await crypto.encrypt(JSON.stringify({
+                username: this.username,
+                password: this.password
+            }));
+        } catch (e) {
+            spinner.dismissAll();
+            document.getElementById("errorText").textContent = "Login fehlgeschlagen!";
+        }
+
+        if (this.remember) {
+            await this.storage.set("encryptedCredentials", encrypted);
+        }
+
+        setTimeout(() => {
+            console.log(encrypted);
+            this.moodleProvider.secureLogin(encrypted).subscribe(async (moodleSession) => {
                 document.getElementById("errorText").textContent = "";
-                this.storage.set("LeoMoodleSesssion", moodleSession);
-                this.navCtrl.setRoot(DayPage, {moodleSession: moodleSession}, {direction: "up"});
+
+                this.navCtrl.setRoot(DayPage, {moodleSession: moodleSession}, {
+                    direction: "up",
+                    animate: true,
+                    animation: "md-transition"
+                });
                 spinner.dismissAll();
-            }, (error: Error) =>
-            {
+            }, (error: Error) => {
                 document.getElementById("errorText").textContent = error.message;
                 spinner.dismissAll();
             });
         }, 1);
     }
-
 }
